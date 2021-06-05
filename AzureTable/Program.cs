@@ -16,13 +16,11 @@ namespace AzureTable
             CloudTableClient _table_client = _account.CreateCloudTableClient();
             CloudTable _table = _table_client.GetTableReference(table_name);
 
-            TableOperation _operation = TableOperation.Retrieve<Customer>(partition_key, row_key);
+            Customer _customer = new Customer("UserE", partition_key, row_key);
+            TableOperation _operation = TableOperation.InsertOrMerge(_customer);
             TableResult _result = _table.Execute(_operation);
-            Customer _customer = _result.Result as Customer;
 
-            Console.WriteLine($"The Customer name is :  { _customer.customername}");
-            Console.WriteLine($"The Customer city is :  { _customer.PartitionKey}");
-            Console.WriteLine($"The Customer id is :  { _customer.RowKey}");
+            Console.WriteLine("The Customer information is updated");
             Console.ReadKey();
         }
     }
