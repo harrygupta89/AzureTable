@@ -11,15 +11,16 @@ namespace AzureTable
         static void Main(string[] args)
         {
             CloudStorageAccount _account = CloudStorageAccount.Parse(Connection_string);
-
             CloudTableClient _table_client = _account.CreateCloudTableClient();
-
             CloudTable _table = _table_client.GetTableReference(table_name);
+           
+            Customer _customer = new Customer("userA", "Chicago", "C1");
 
-            _table.CreateIfNotExists();
+            TableOperation _operation = TableOperation.Insert(_customer);
 
-            Console.WriteLine("Table has been created");
+            TableResult _result = _table.Execute(_operation);
 
+            Console.WriteLine("Entity is Added");
             Console.ReadKey();
         }
     }
