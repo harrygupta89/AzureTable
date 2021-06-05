@@ -1,6 +1,5 @@
 ﻿using Microsoft.Azure.Cosmos.Table;
 using System;
-using System.Collections.Generic;
 
 namespace AzureTable
 {
@@ -9,8 +8,7 @@ namespace AzureTable
         private static string Connection_string = "DefaultEndpointsProtocol=https;AccountName=appstore200089;AccountKey=SGnsTS1c1IT6cYeBWsNu3LYywQ/cYj9WtKWjudpUzRRNjIekbj1gx53thQQHZ6dDryuym2kQd3GKWmHs8rA9Og==;EndpointSuffix=core.windows.net";
         private static string table_name = "Customer";
         private static string partition_key = "Chicago";
-        private static string row_key = "UserB";
-
+        private static string row_key = "C2";
 
         static void Main(string[] args)
         {
@@ -18,23 +16,16 @@ namespace AzureTable
             CloudTableClient _table_client = _account.CreateCloudTableClient();
             CloudTable _table = _table_client.GetTableReference(table_name);
 
-            List<Customer> _customers = new List<Customer>()
-            {
-                new Customer("userB", "Chicago", "C2"),
-                new Customer("userC", "Chicago", "C3"),
-                new Customer("userD", "Chicago", "C4"),
-            };
+            TableOperation _operation = TableOperation.Retrieve<Customer>(partition_key, row_key);
+            TableResult _result = _table.Execute(_operation);
+            Customer _customer = _result.Result as Customer;
 
-            TableBatchOperation _operation = new TableBatchOperation();
-            foreach (Customer c in _customers)
-            {
-                _operation.Insert(c);
-            }
-
-            TableBatchResult _result = _table.ExecuteBatch(_operation);
-            Console.WriteLine("Batch of Entity has been added");
+            Console.WriteLine($"The Customer name is :  { _customer.customername}");
+            Console.WriteLine($"The Customer city is :  { _customer.PartitionKey}");
+            Console.WriteLine($"The Customer id is :  { _customer.RowKey}");
             Console.ReadKey();
         }
     }
 }
+
 
